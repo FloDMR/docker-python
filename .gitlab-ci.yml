@@ -1,6 +1,6 @@
 stages:
   - package
-
+  - integration
 push image docker:
   image: docker:stable
   stage: package
@@ -10,4 +10,15 @@ push image docker:
     - docker build -t $CI_REGISTRY_IMAGE .
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker push $CI_REGISTRY_IMAGE
+integration test:
+  image: docker:stable
+  stage: integration
+  services:
+    - docker:18-dind
+  script:
+    - docker run -d --name myapp $CI_REGISTRY_IMAGE
+    - sleep 10s
+    - TEST_RESULT=$(docker run --link myapp lucj/curl -s http://myapp:8000)
+    - echo $TEST_RESULT
+    - $([ "$TEST_RESULT" == "Hello World!" ])
 

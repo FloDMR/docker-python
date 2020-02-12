@@ -20,5 +20,5 @@ integration test:
     - sleep 10s
     - TEST_RESULT=$(docker run --link myapp lucj/curl -s http://myapp:8000)
     - echo $TEST_RESULT
-    - $([ "$TEST_RESULT" == "Hello World!" ])
+    - $([ "$TEST_RESULT" == "Hi!" ])
 
